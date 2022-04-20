@@ -1,9 +1,14 @@
+import {
+  faEnvelope,
+  faLock,
+  faSignIn,
+} from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useState } from "react";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 
 import "./App.css";
-import ErrorBoundary from "./components/ErrorBoundary";
-import Header from "./components/Header";
+
+import { Form, FormField, SubmitInput } from "./components/form";
+import { loginValidationSchema as validationSchema } from "./config/validation";
 import { ThemeContext } from "./contexts/ThemeContext";
 
 function App() {
@@ -11,12 +16,12 @@ function App() {
 
   const [{ theme, isDark }, toggleTheme] = useContext(ThemeContext);
 
-  console.log("theme", theme);
+  // console.log("theme", theme);
 
   useEffect(() => {
     const fechData = async () => {
       // From Server Or Some Place.
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setTitle("Student Portal");
     };
@@ -24,48 +29,35 @@ function App() {
     fechData();
   }, []);
 
+  const handleSubmit = (formData) => console.log(formData);
+
   return (
-    <ErrorBoundary>
-      <div
-        className="app"
-        style={{ backgroundColor: theme.backgroundColor, color: theme.color }}
+    <>
+      <Form
+        initialValues={{ email: "", password: "" }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
       >
-        <HelmetProvider>
-          <Helmet>
-            <title>{title ? title : "Loading..."}</title>
-          </Helmet>
-        </HelmetProvider>
+        <FormField
+          icon={faEnvelope}
+          label="Enter Your Email"
+          name="email"
+          placeholder="Email"
+          type="text"
+        />
 
-        <Header />
+        <FormField
+          icon={faLock}
+          label="Enter Your Password"
+          name="password"
+          placeholder="Password"
+          type="password"
+        />
 
-        <div className="theme-text" style={styles.themeText}>
-          You're using a {isDark ? "Dark" : "Light"} theme{" "}
-        </div>
-        <button style={styles.themeButton} onClick={toggleTheme}>
-          Toggle Theme
-        </button>
-      </div>
-    </ErrorBoundary>
+        <SubmitInput className="login-btn" icon={faSignIn} value="Login" />
+      </Form>
+    </>
   );
 }
-
-const styles = {
-  themeButton: {
-    padding: 5,
-    position: "fixed",
-    right: "2rem",
-    top: "22vh",
-    zIndex: 1001,
-    cursor: "pointer",
-  },
-
-  themeText: {
-    padding: 5,
-    position: "fixed",
-    right: "10rem",
-    top: "22vh",
-    zIndex: 1001,
-  },
-};
 
 export default App;

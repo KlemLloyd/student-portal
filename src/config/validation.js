@@ -1,8 +1,7 @@
 import * as Yup from "yup";
 
-const validationSchema = Yup.object().shape({
+export const loginValidationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
-
   password: Yup.string()
     .required()
     .matches(/^(?=.*[A-Z])/, "Must Contain At Least One Uppercase!")
@@ -12,13 +11,9 @@ const validationSchema = Yup.object().shape({
       /^(?=.*[@$!%*#?&])/,
       "Must Contain At Least One Special Character!"
     )
-    .matches(/^[A-Za-z\d@$!%*#?&]{8,}$/, "Must Be At Least 8 Characters long!")
+    .matches(
+      /^[A-Za-z\d@$!%*#?&]{8,}$/,
+      "Must Be At Least 8 Characters Long, And Not Include Spaces!"
+    )
     .label("Password"),
-
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("password"), null],
-    "Passwords must match!"
-  ),
 });
-
-export default validationSchema;
